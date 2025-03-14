@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { StarIcon, ClockIcon } from '@heroicons/react/24/solid';
@@ -10,18 +11,62 @@ import CastCard from '@/app/components/CastCard';
 import ReviewCard from '@/app/components/ReviewCard';
 import AddToListButton from '@/app/components/AddToListButton';
 
-async function getMovieDetails(id: string) {
-  const movieDetails = await tmdbApi.getMovieDetails(id);
-  const similarMovies = await tmdbApi.getSimilarMovies(id);
-  
-  return {
-    movie: movieDetails,
-    similar: similarMovies.slice(0, 5)
-  };
+function getMovieDetails(id: string) {
+  return Promise.all([
+    tmdbApi.getMovieDetails(id),
+    tmdbApi.getSimilarMovies(id)
+  ]).then(([movieDetails, similarMovies]) => {
+    return {
+      movie: movieDetails,
+      similar: similarMovies.slice(0, 5)
+    };
+  });
 }
 
-export default async function MoviePage({ params }: { params: { id: string } }) {
-  const { movie, similar } = await getMovieDetails(params.id);
+export default function MoviePage({ params }: { params: { id: string } }) {
+  const [loading, setLoading] = useState(true);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [similar, setSimilar] = useState<Movie[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    setLoading(true);
+    getMovieDetails(params.id)
+      .then(data => {
+        setMovie(data.movie);
+        setSimilar(data.similar);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching movie details:', err);
+        setError('Failed to load movie details. Please try again later.');
+        setLoading(false);
+      });
+  }, [params.id]);
+  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center p-8 max-w-md">
+          <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
+          <Link href="/movies" className="btn-primary">
+            Back to Movies
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!movie) return null;
   
   // Find trailer
   const trailer = movie.videos?.results.find(

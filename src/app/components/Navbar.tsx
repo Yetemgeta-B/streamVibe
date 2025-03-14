@@ -1,38 +1,47 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect, useRef } from 'react';
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import Image from 'next/image';
 
 export default function Navbar() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Handle scroll effect for navbar
   useEffect(() => {
-    // Check login status from localStorage on component mount
-    const loginStatus = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loginStatus);
-
-    // Setup event listener for storage changes
-    const handleStorageChange = () => {
-      const updatedLoginStatus = localStorage.getItem('isLoggedIn') === 'true';
-      setIsLoggedIn(updatedLoginStatus);
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem('isLoggedIn');
-    setIsLoggedIn(false);
+  // Focus search input when opened
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 200);
+    }
+  }, [isSearchOpen]);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
     router.push('/');
   };
 
@@ -41,156 +50,303 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
       setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (isSearchOpen) {
+      setSearchQuery('');
     }
   };
 
   return (
-    <nav className="bg-[#0f172a]/95 backdrop-blur-sm fixed w-full z-50 shadow-lg">
+    <nav className={`nav-container ${scrolled ? 'nav-scrolled' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              StreamVibe
-            </h1>
+            <div className="flex items-center">
+              <div className="w-10 h-10 mr-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center animate-pulse-slow shadow-glow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
+                  <path d="M4 2.69127C4 1.93067 4.81547 1.44851 5.48192 1.81506L22.4069 11.1238C23.0977 11.5037 23.0977 12.4963 22.4069 12.8762L5.48192 22.1849C4.81546 22.5515 4 22.0693 4 21.3087V2.69127Z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold animate-gradient-text text-glow">
+                StreamVibe
+              </h1>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-6">
-              <Link href="/" className="nav-link">
-                Home
+          <div className="hidden md:flex items-center space-x-6">
+            <Link 
+              href="/" 
+              className="nav-link relative py-2 text-gray-300 hover:text-white transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
+            >
+              Home
+            </Link>
+            <Link 
+              href="/movies" 
+              className="nav-link relative py-2 text-gray-300 hover:text-white transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
+            >
+              Movies
+            </Link>
+            <Link 
+              href="/tv-shows" 
+              className="nav-link relative py-2 text-gray-300 hover:text-white transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
+            >
+              TV Shows
+            </Link>
+            {status === 'authenticated' && (
+              <Link 
+                href="/my-list" 
+                className="nav-link relative py-2 text-gray-300 hover:text-white transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
+              >
+                My List
               </Link>
-              <Link href="/movies" className="nav-link">
-                Movies
-              </Link>
-              <Link href="/tv-shows" className="nav-link">
-                TV Shows
-              </Link>
-              {isLoggedIn && (
-                <Link href="/my-list" className="nav-link">
-                  My List
-                </Link>
-              )}
+            )}
+
+            {/* Enhanced Search Button and Input */}
+            <div className="relative ml-4">
+              <button
+                onClick={toggleSearch}
+                className="search-icon-btn"
+                aria-label="Search"
+              >
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-300 hover:text-white transition-colors z-10 relative" />
+              </button>
+              <div className={`search-input-container ${isSearchOpen ? 'active' : ''}`}>
+                <form onSubmit={handleSearch}>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search movies, TV shows..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                    onBlur={() => {
+                      if (!searchQuery.trim()) {
+                        setIsSearchOpen(false);
+                      }
+                    }}
+                  />
+                </form>
+              </div>
             </div>
           </div>
 
-          {/* Search & Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="text-gray-300 hover:text-cyan-400 transition-colors"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
-            </button>
-            
-            {isLoggedIn ? (
-              <button
-                onClick={handleSignOut}
-                className="btn-secondary border border-gray-700 hover:border-cyan-500"
-              >
-                Sign Out
-              </button>
-            ) : (
-              <div className="flex space-x-3">
-                <Link href="/auth/login" className="btn-secondary border border-gray-700 hover:border-cyan-500">
-                  Sign In
-                </Link>
-                <Link href="/auth/register" className="btn-primary bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
-                  Register
-                </Link>
-              </div>
-            )}
-          </div>
+          {/* User Menu */}
+          <div className="flex items-center">
+            {status === 'authenticated' ? (
+              <div className="relative ml-3">
+                <button
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all duration-300"
+                >
+                  <span className="sr-only">Open user menu</span>
+                  {session?.user?.image ? (
+                    <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-transparent hover:border-cyan-400 transition-colors duration-300 shadow-glow-sm">
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || ''}
+                        width={36}
+                        height={36}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white flex items-center justify-center shadow-glow-sm">
+                      <span className="text-sm font-medium">
+                        {session?.user?.name?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  )}
+                </button>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center space-x-3">
-            <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="text-gray-300 hover:text-cyan-400 transition-colors"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
-            </button>
+                {isProfileMenuOpen && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-glow bg-gray-900 backdrop-blur-md ring-1 ring-cyan-500/20 animate-fade-in z-50">
+                    <div className="py-1">
+                      <div className="px-4 py-2 border-b border-gray-800">
+                        <p className="text-sm font-medium text-white">{session?.user?.name}</p>
+                        <p className="text-xs text-gray-400 truncate">{session?.user?.email}</p>
+                      </div>
+                      {session?.user?.email === 'streamvibe@gmail.com' && (
+                        <Link
+                          href="/admin"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                        >
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/my-list"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                      >
+                        My List
+                      </Link>
+                      <Link
+                        href="/settings"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                      >
+                        Settings
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-glow-sm hover:shadow-glow btn-hover-effect"
+              >
+                Sign In
+              </Link>
+            )}
+
+            {/* Mobile menu button */}
             <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500 ml-4 md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-cyan-400 focus:outline-none"
             >
+              <span className="sr-only">Open main menu</span>
               {isMenuOpen ? (
-                <XMarkIcon className="block h-6 w-6" />
+                <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
               ) : (
-                <Bars3Icon className="block h-6 w-6" />
+                <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      {isSearchOpen && (
-        <div className="bg-[#1e293b] p-3 border-t border-gray-800">
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-              </div>
+      {/* Mobile Menu */}
+      <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden rounded-b-xl ${isMenuOpen ? 'max-h-96' : 'max-h-0'}`}>
+        <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-900/90 backdrop-blur-md">
+          <div className="px-3 py-2">
+            <form onSubmit={handleSearch} className="flex">
               <input
                 type="text"
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-cyan-500 focus:outline-none text-white"
-                placeholder="Search for movies, TV shows..."
+                className="bg-gray-800/50 border border-gray-700 rounded-l-md w-full px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500 input-glow"
               />
               <button
                 type="submit"
-                className="absolute inset-y-0 right-0 px-4 text-cyan-500 hover:text-cyan-400"
+                className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-2 rounded-r-md"
               >
-                Search
+                <MagnifyingGlassIcon className="h-5 w-5" />
               </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-[#1e293b] border-t border-gray-800">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/" className="mobile-nav-link">
-              Home
-            </Link>
-            <Link href="/movies" className="mobile-nav-link">
-              Movies
-            </Link>
-            <Link href="/tv-shows" className="mobile-nav-link">
-              TV Shows
-            </Link>
-            {isLoggedIn && (
-              <Link href="/my-list" className="mobile-nav-link">
-                My List
-              </Link>
-            )}
+            </form>
           </div>
-          <div className="pt-4 pb-3 border-t border-gray-800">
-            {isLoggedIn ? (
-              <button
-                onClick={handleSignOut}
-                className="mobile-nav-link w-full text-left"
-              >
-                Sign Out
-              </button>
-            ) : (
-              <div className="space-y-2 px-2">
-                <Link href="/auth/login" className="mobile-nav-link block">
-                  Sign In
-                </Link>
-                <Link href="/auth/register" className="mobile-nav-link block">
-                  Register
-                </Link>
+          
+          <Link
+            href="/"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            href="/movies"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Movies
+          </Link>
+          <Link
+            href="/tv-shows"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            TV Shows
+          </Link>
+          {status === 'authenticated' && (
+            <Link
+              href="/my-list"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              My List
+            </Link>
+          )}
+          
+          {/* Mobile Auth Controls */}
+          {status === 'authenticated' ? (
+            <>
+              <div className="px-3 py-2 border-t border-gray-800 mt-2 flex items-center">
+                {session?.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || ''}
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 rounded-full mr-3"
+                  />
+                ) : (
+                  <div className="h-9 w-9 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white flex items-center justify-center mr-3">
+                    <span className="text-sm font-medium">
+                      {session?.user?.name?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                )}
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white">{session?.user?.name}</p>
+                  <p className="text-xs text-gray-400 truncate">{session?.user?.email}</p>
+                </div>
               </div>
-            )}
-          </div>
+              {session?.user?.email === 'streamvibe@gmail.com' && (
+                <Link
+                  href="/admin"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin Dashboard
+                </Link>
+              )}
+              <Link
+                href="/profile"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Profile
+              </Link>
+              <button
+                onClick={() => {
+                  handleSignOut();
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="block px-3 py-2 rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-center font-medium mt-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
-      )}
+      </div>
     </nav>
   );
 } 

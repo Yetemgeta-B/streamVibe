@@ -1,89 +1,67 @@
-export default function TermsPage() {
-  return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-        Terms of Service
-      </h1>
+'use client';
 
-      <div className="space-y-8 text-gray-300">
+import Link from 'next/link';
+
+export default function TermsOfService() {
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Terms of Service</h1>
+      
+      <div className="space-y-6 text-gray-300">
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">1. Acceptance of Terms</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">1. Introduction</h2>
           <p className="mb-4">
-            By accessing and using MovieStream, you accept and agree to be bound by the terms and
-            provisions of this agreement.
+            Welcome to StreamVibe. By accessing our website, you agree to these Terms of Service in full. If you disagree with these terms or any part of them, you must not use our service.
           </p>
         </section>
-
+        
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">2. Use License</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">2. Intellectual Property Rights</h2>
           <p className="mb-4">
-            Permission is granted to temporarily access the materials (information or software) on
-            MovieStream for personal, non-commercial transitory viewing only.
+            Unless otherwise stated, we own the intellectual property rights for all material on StreamVibe. All intellectual property rights are reserved.
           </p>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>The materials cannot be modified or copied</li>
-            <li>The materials cannot be used for commercial purposes</li>
-            <li>Any unauthorized use terminates the permission granted herein</li>
+        </section>
+        
+        <section>
+          <h2 className="text-xl font-semibold mb-4 text-white">3. Restrictions</h2>
+          <p className="mb-4">
+            You are specifically restricted from:
+          </p>
+          <ul className="list-disc pl-6 mb-4 space-y-2">
+            <li>Publishing any material from StreamVibe in any other media without our permission</li>
+            <li>Selling, sublicensing and/or otherwise commercializing any material from StreamVibe</li>
+            <li>Using this website in any way that is or may be damaging to this website</li>
+            <li>Using this website to engage in any advertising or marketing</li>
           </ul>
         </section>
-
+        
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">3. Account Terms</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">4. Subscription</h2>
           <p className="mb-4">
-            You are responsible for maintaining the security of your account and password. MovieStream
-            cannot and will not be liable for any loss or damage from your failure to comply with this
-            security obligation.
+            Some parts of StreamVibe are offered on a subscription basis. You will be billed in advance on a recurring basis, depending on the type of subscription plan you select.
           </p>
         </section>
-
+        
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">4. Content and Copyright</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">5. Content</h2>
           <p className="mb-4">
-            All content available through our service, including but not limited to movies, text,
-            graphics, logos, and software is the property of MovieStream or its content suppliers and
-            protected by international copyright laws.
+            Our Service allows you to stream movies, TV shows, and other entertainment content. The content available through our service is licensed, not sold. We reserve the right to add or remove content at any time.
           </p>
         </section>
-
+        
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">5. Subscription and Billing</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">6. Disclaimer</h2>
           <p className="mb-4">
-            To access the streaming service, you must have Internet access and a MovieStream
-            subscription. You can find the specific details about your MovieStream subscription by
-            visiting your account page.
+            To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our website and the use of this website.
           </p>
         </section>
-
+        
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">6. Termination</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">7. Contact Us</h2>
           <p className="mb-4">
-            MovieStream reserves the right to terminate or suspend access to our service immediately,
-            without prior notice or liability, for any reason whatsoever, including without limitation
-            if you breach the Terms.
+            If you have any questions about these Terms, please <Link href="/contact" className="text-cyan-400 hover:text-cyan-300">contact us</Link>.
           </p>
         </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-white mb-4">7. Changes to Terms</h2>
-          <p className="mb-4">
-            MovieStream reserves the right, at our sole discretion, to modify or replace these Terms at
-            any time. If a revision is material, we will try to provide at least 30 days notice prior
-            to any new terms taking effect.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-white mb-4">8. Contact Information</h2>
-          <p>
-            If you have any questions about these Terms, please contact us at support@moviestream.com
-          </p>
-        </section>
-
-        <div className="pt-8 border-t border-gray-800">
-          <p className="text-sm text-gray-400">
-            Last updated: {new Date().toLocaleDateString()}
-          </p>
-        </div>
       </div>
     </div>
   );
