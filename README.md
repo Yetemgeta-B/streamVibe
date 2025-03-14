@@ -1,70 +1,131 @@
-# Getting Started with Create React App
+# 🎬 StreamVibe - Your Ultimate Movie Streaming Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
+  <img src="https://i.imgur.com/XYZ123.png" alt="StreamVibe Logo" width="200"/>
+  
+  [![Next.js](https://img.shields.io/badge/Next.js-13.0-black?logo=next.js)](https://nextjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+  [![TMDB API](https://img.shields.io/badge/TMDB-API-01D277?logo=themoviedatabase)](https://www.themoviedb.org/documentation/api)
+  
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+</div>
 
-## Available Scripts
+## 🌟 Features
 
-In the project directory, you can run:
+- 🎯 **Smart Movie Discovery**
+  - AI-powered recommendations
+  - Personalized watchlist
+  - Genre-based browsing
+  - Trending movies section
 
-### `npm start`
+- 🎥 **Multi-Source Streaming**
+  - Integration with popular streaming services
+  - Free movie sources
+  - HD quality playback
+  - Custom video player
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 👤 **User Experience**
+  - Beautiful, responsive design
+  - Dark mode support
+  - Mobile-friendly interface
+  - Smooth animations
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 🔒 **Security**
+  - Secure authentication
+  - Protected admin routes
+  - Rate limiting
+  - Input validation
 
-### `npm test`
+## 🚀 Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+- Node.js 18.x or later
+- npm or yarn
+- TMDB API key
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository
+```bash
+git clone https://github.com/HP/StreamVibe.git
+cd StreamVibe
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
 
-### `npm run eject`
+3. Set up environment variables
+```bash
+cp .env.example .env.local
+```
+Edit `.env.local` with your configuration:
+```env
+TMDB_API_KEY=your_tmdb_api_key
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🛠️ Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Frontend**
+  - Next.js 13
+  - TypeScript
+  - Tailwind CSS
+  - Framer Motion
+  - React Query
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Backend**
+  - Next.js API Routes
+  - NextAuth.js
+  - TMDB API
+  - Prisma (coming soon)
 
-## Learn More
+- **Deployment**
+  - Vercel
+  - Docker (coming soon)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📱 Screenshots
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<div align="center">
+  <img src="https://i.imgur.com/ABC123.png" alt="Homepage" width="300"/>
+  <img src="https://i.imgur.com/DEF456.png" alt="Movie Details" width="300"/>
+  <img src="https://i.imgur.com/GHI789.png" alt="Streaming Player" width="300"/>
+</div>
 
-### Code Splitting
+## 🤝 Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-### Analyzing the Bundle Size
+## 📄 License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Making a Progressive Web App
+## 🙏 Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- [TMDB](https://www.themoviedb.org/) for their amazing API
+- [Next.js](https://nextjs.org/) team for the incredible framework
+- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
 
-### Advanced Configuration
+## 📞 Support
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Need help? Join our [Discord community](https://discord.gg/streamvibe) or open an issue.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<div align="center">
+  Made with ❤️ by the StreamVibe Team
+</div> 
